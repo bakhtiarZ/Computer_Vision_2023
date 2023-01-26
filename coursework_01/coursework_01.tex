@@ -1,0 +1,714 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{coursework\_01}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{coursework-1-image-filtering}{%
+\section{Coursework 1: Image
+filtering}\label{coursework-1-image-filtering}}
+
+In this coursework you will practice techniques for image filtering. The
+coursework includes coding questions and written questions. Please read
+both the text and the code in this notebook to get an idea what you are
+expected to implement.
+
+\hypertarget{what-to-do}{%
+\subsection{What to do?}\label{what-to-do}}
+
+\begin{itemize}
+\item
+  Complete and run the code using \texttt{jupyter-lab} or
+  \texttt{jupyter-notebook} to get the results.
+\item
+  Export (File \textbar{} Save and Export Notebook As\ldots) the
+  notebook as a PDF file, which contains your code, results and answers,
+  and upload the PDF file onto
+  \href{https://scientia.doc.ic.ac.uk}{Scientia}.
+\item
+  Instead of clicking the Export button, you can also run the following
+  command instead:
+  \texttt{jupyter\ nbconvert\ coursework\_01\_solution.ipynb\ -\/-to\ pdf}
+\item
+  If Jupyter complains about some problems in exporting, it is likely
+  that pandoc (https://pandoc.org/installing.html) or latex is not
+  installed, or their paths have not been included. You can install the
+  relevant libraries and retry. Alternatively, use the Print function of
+  your browser to export the PDF file.
+\item
+  If Jupyter-lab does not work for you at the end (we hope not), you can
+  use Google Colab to write the code and export the PDF file.
+\end{itemize}
+
+\hypertarget{dependencies}{%
+\subsection{Dependencies:}\label{dependencies}}
+
+You need to install Jupyter-Lab
+(https://jupyterlab.readthedocs.io/en/stable/getting\_started/installation.html)
+and other libraries used in this coursework, such as by running the
+command: \texttt{pip3\ install\ {[}package\_name{]}}
+
+    \hypertarget{moving-average-filter-20-points.}{%
+\subsection{1. Moving average filter (20
+points).}\label{moving-average-filter-20-points.}}
+
+Read the provided input image, add noise to the image and design a
+moving average filter for denoising.
+
+You are expected to design the kernel of the filter and then perform 2D
+image filtering using the function \texttt{scipy.signal.convolve2d()}.
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{coursework_01_files/coursework_01_3_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{coursework_01_files/coursework_01_4_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{note-from-now-on-please-use-the-noisy-image-as-the-input-for-the-filters.}{%
+\subsubsection{Note: from now on, please use the noisy image as the
+input for the
+filters.}\label{note-from-now-on-please-use-the-noisy-image-as-the-input-for-the-filters.}}
+
+\hypertarget{filter-the-noisy-image-with-a-3x3-moving-average-filter.-show-the-filtering-results.}{%
+\subsubsection{1.1 Filter the noisy image with a 3x3 moving average
+filter. Show the filtering
+results.}\label{filter-the-noisy-image-with-a-3x3-moving-average-filter.-show-the-filtering-results.}}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Filter h:
+[[0.11111111 0.11111111 0.11111111]
+ [0.11111111 0.11111111 0.11111111]
+ [0.11111111 0.11111111 0.11111111]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{coursework_01_files/coursework_01_6_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{filter-the-noisy-image-with-a-11x11-moving-average-filter.}{%
+\subsubsection{1.2 Filter the noisy image with a 11x11 moving average
+filter.}\label{filter-the-noisy-image-with-a-11x11-moving-average-filter.}}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Filter h:
+[[0.00826446 0.00826446 0.00826446 0.00826446 0.00826446 0.00826446
+  0.00826446 0.00826446 0.00826446 0.00826446 0.00826446]
+ [0.00826446 0.00826446 0.00826446 0.00826446 0.00826446 0.00826446
+  0.00826446 0.00826446 0.00826446 0.00826446 0.00826446]
+ [0.00826446 0.00826446 0.00826446 0.00826446 0.00826446 0.00826446
+  0.00826446 0.00826446 0.00826446 0.00826446 0.00826446]
+ [0.00826446 0.00826446 0.00826446 0.00826446 0.00826446 0.00826446
+  0.00826446 0.00826446 0.00826446 0.00826446 0.00826446]
+ [0.00826446 0.00826446 0.00826446 0.00826446 0.00826446 0.00826446
+  0.00826446 0.00826446 0.00826446 0.00826446 0.00826446]
+ [0.00826446 0.00826446 0.00826446 0.00826446 0.00826446 0.00826446
+  0.00826446 0.00826446 0.00826446 0.00826446 0.00826446]
+ [0.00826446 0.00826446 0.00826446 0.00826446 0.00826446 0.00826446
+  0.00826446 0.00826446 0.00826446 0.00826446 0.00826446]
+ [0.00826446 0.00826446 0.00826446 0.00826446 0.00826446 0.00826446
+  0.00826446 0.00826446 0.00826446 0.00826446 0.00826446]
+ [0.00826446 0.00826446 0.00826446 0.00826446 0.00826446 0.00826446
+  0.00826446 0.00826446 0.00826446 0.00826446 0.00826446]
+ [0.00826446 0.00826446 0.00826446 0.00826446 0.00826446 0.00826446
+  0.00826446 0.00826446 0.00826446 0.00826446 0.00826446]
+ [0.00826446 0.00826446 0.00826446 0.00826446 0.00826446 0.00826446
+  0.00826446 0.00826446 0.00826446 0.00826446 0.00826446]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{coursework_01_files/coursework_01_8_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{comment-on-the-filtering-results.-how-do-different-kernel-sizes-influence-the-filtering-results}{%
+\subsubsection{1.3 Comment on the filtering results. How do different
+kernel sizes influence the filtering
+results?}\label{comment-on-the-filtering-results.-how-do-different-kernel-sizes-influence-the-filtering-results}}
+
+    \#\#\#~Insert~your~answer~\#\#\#
+
+Kernel sizing affects the filtering by increasing the number of terms in
+the moving average filter. As you increase the terms, you change the
+shape of the frequency response, decreasing the cutoff frequency and
+transition band size. It also reduces the stopband ripple. In terms of
+visual changes, it smooths out the image even more, as the kernel size
+approaches the image size (K-\textgreater N) then it the image will
+appear as one colour (intensity for gray scale).
+
+    \hypertarget{edge-detection-56-points.}{%
+\subsection{2. Edge detection (56
+points).}\label{edge-detection-56-points.}}
+
+Perform edge detection using Sobel filtering, as well as Gaussian +
+Sobel filtering.
+
+    \hypertarget{implement-3x3-sobel-filters-and-convolve-with-the-noisy-image.}{%
+\subsubsection{2.1 Implement 3x3 Sobel filters and convolve with the
+noisy
+image.}\label{implement-3x3-sobel-filters-and-convolve-with-the-noisy-image.}}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+sobel\_x:
+[[ 1  0 -1]
+ [ 2  0 -2]
+ [ 1  0 -1]]
+sobel\_y:
+[[ 1  2  1]
+ [ 0  0  0]
+ [-1 -2 -1]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{coursework_01_files/coursework_01_13_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{implement-a-function-that-generates-a-2d-gaussian-filter-given-the-parameter-sigma.}{%
+\subsubsection{\texorpdfstring{2.2 Implement a function that generates a
+2D Gaussian filter given the parameter
+\(\sigma\).}{2.2 Implement a function that generates a 2D Gaussian filter given the parameter \textbackslash sigma.}}\label{implement-a-function-that-generates-a-2d-gaussian-filter-given-the-parameter-sigma.}}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\begin{Verbatim}[commandchars=\\\{\}]
+<matplotlib.image.AxesImage at 0x1af52055210>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{coursework_01_files/coursework_01_15_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{perform-gaussian-smoothing-sigma-5-pixels-and-evaluate-the-computational-time-for-gaussian-smoothing.-after-that-perform-sobel-filtering-and-show-the-gradient-magintude-map.}{%
+\subsubsection{\texorpdfstring{2.3 Perform Gaussian smoothing
+(\(\sigma\) = 5 pixels) and evaluate the computational time for Gaussian
+smoothing. After that, perform Sobel filtering and show the gradient
+magintude
+map.}{2.3 Perform Gaussian smoothing (\textbackslash sigma = 5 pixels) and evaluate the computational time for Gaussian smoothing. After that, perform Sobel filtering and show the gradient magintude map.}}\label{perform-gaussian-smoothing-sigma-5-pixels-and-evaluate-the-computational-time-for-gaussian-smoothing.-after-that-perform-sobel-filtering-and-show-the-gradient-magintude-map.}}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+8.386864423751831
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{coursework_01_files/coursework_01_17_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{implement-a-function-that-generates-a-1d-gaussian-filter-given-the-parameter-sigma.-generate-1d-gaussian-filters-along-x-axis-and-y-axis-respectively.}{%
+\subsubsection{\texorpdfstring{2.4 Implement a function that generates a
+1D Gaussian filter given the parameter \(\sigma\). Generate 1D Gaussian
+filters along x-axis and y-axis
+respectively.}{2.4 Implement a function that generates a 1D Gaussian filter given the parameter \textbackslash sigma. Generate 1D Gaussian filters along x-axis and y-axis respectively.}}\label{implement-a-function-that-generates-a-1d-gaussian-filter-given-the-parameter-sigma.-generate-1d-gaussian-filters-along-x-axis-and-y-axis-respectively.}}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\begin{Verbatim}[commandchars=\\\{\}]
+<matplotlib.image.AxesImage at 0x1af56ec2170>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{coursework_01_files/coursework_01_19_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{perform-gaussian-smoothing-sigma-5-pixels-using-two-separable-filters-and-evaluate-the-computational-time-for-separable-gaussian-filtering.-after-that-perform-sobel-filtering-show-the-gradient-magnitude-map-and-check-whether-it-is-the-same-as-the-previous-one-without-separable-filtering.}{%
+\subsubsection{\texorpdfstring{2.6 Perform Gaussian smoothing
+(\(\sigma\) = 5 pixels) using two separable filters and evaluate the
+computational time for separable Gaussian filtering. After that, perform
+Sobel filtering, show the gradient magnitude map and check whether it is
+the same as the previous one without separable
+filtering.}{2.6 Perform Gaussian smoothing (\textbackslash sigma = 5 pixels) using two separable filters and evaluate the computational time for separable Gaussian filtering. After that, perform Sobel filtering, show the gradient magnitude map and check whether it is the same as the previous one without separable filtering.}}\label{perform-gaussian-smoothing-sigma-5-pixels-using-two-separable-filters-and-evaluate-the-computational-time-for-separable-gaussian-filtering.-after-that-perform-sobel-filtering-show-the-gradient-magnitude-map-and-check-whether-it-is-the-same-as-the-previous-one-without-separable-filtering.}}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[0.00088637 0.00158309 0.00271659 0.00447891 0.00709492 0.01079819
+  0.01579003 0.02218417 0.02994549 0.03883721 0.04839414 0.05793831
+  0.06664492 0.07365403 0.07820854 0.07978846 0.07820854 0.07365403
+  0.06664492 0.05793831 0.04839414 0.03883721 0.02994549 0.02218417
+  0.01579003 0.01079819 0.00709492 0.00447891 0.00271659 0.00158309
+  0.00088637]]
+1.003387212753296
+(1280, 1280)
+4.2420422474539913e-13
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{coursework_01_files/coursework_01_21_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{comment-on-the-gaussian-sobel-filtering-results-and-the-computational-time.}{%
+\subsubsection{2.7 Comment on the Gaussian + Sobel filtering results and
+the computational
+time.}\label{comment-on-the-gaussian-sobel-filtering-results-and-the-computational-time.}}
+
+    \#\#\#~Insert~your~answer~\#\#\# Gaussian filtering is needed in order
+to achieve gaussian smoothing. This is so that minute, sharp changes in
+amplitude due to noise are less impactful on the derivative functions.
+These derivative functions in discrete time can be generated via the
+centre difference. The centre differences are calculated using the
+Sobel/Prewitt filters respective to both the x and y axis. Sobel/Prewitt
+filters have a lowpass filter in the perpendicular direction of their
+difference equations, this aids in the ability to detect edges by
+smoothing the noise in the complementary direction. The visual result is
+an image with the horizontal and vertical edges highlighted with a
+higher intensity whilst the other points in the image have their
+intensity reduced almost to black pixels. The output of the two Sobel
+filters are combined using the gradient magnitude equation which creates
+the image you see above.
+
+In the frequency domain, the effect of the cascading filters is that of
+a low pass filter followed by a high pass filter.
+
+With regards to the computational time, a Sobel Filter has K\^{}2
+multiplications and K\^{}2 -1 summations and this happens for N\^{}2
+pixels. Therefore, the complexity is O(N\^{}2 * K\^{}2. Gaussian Kernel
+also has the same complexity, however, both of these are seperable. Once
+seperated, the complexity is O(N\^{}2 * K) due to 2N\^{}2 * K
+multiplications and 2N\^{}2 * (K-1) summations.
+
+    \hypertarget{challenge-implement-2d-image-filters-using-pytorch-24-points.}{%
+\subsection{3. Challenge: Implement 2D image filters using Pytorch (24
+points).}\label{challenge-implement-2d-image-filters-using-pytorch-24-points.}}
+
+\href{https://pytorch.org/}{Pytorch} is a machine learning framework
+that supports filtering and convolution.
+
+The \href{https://pytorch.org/docs/stable/nn.html\#conv2d}{Conv2D}
+operator takes an input array of dimension NxC1xXxY, applies the filter
+and outputs an array of dimension NxC2xXxY. Here, since we only have one
+image with one colour channel, we will set N=1, C1=1 and C2=1. You can
+read the documentation of Conv2D for more detail.
+
+    \hypertarget{expand-the-dimension-of-the-noisy-image-into-1x1xxxy-and-convert-it-to-a-pytorch-tensor.}{%
+\subsubsection{3.1 Expand the dimension of the noisy image into 1x1xXxY
+and convert it to a Pytorch
+tensor.}\label{expand-the-dimension-of-the-noisy-image-into-1x1xxxy-and-convert-it-to-a-pytorch-tensor.}}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+(1, 1, 1280, 1280)
+    \end{Verbatim}
+
+    \hypertarget{create-a-pytorch-conv2d-filter-set-its-kernel-to-be-a-2d-gaussian-filter-and-perform-filtering.}{%
+\subsubsection{3.2 Create a Pytorch Conv2D filter, set its kernel to be
+a 2D Gaussian filter and perform
+filtering.}\label{create-a-pytorch-conv2d-filter-set-its-kernel-to-be-a-2d-gaussian-filter-and-perform-filtering.}}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+0.013656789439932936
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{coursework_01_files/coursework_01_29_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{implement-pytorch-conv2d-filters-to-perform-sobel-filtering-on-gaussian-smoothed-images-show-the-gradient-magnitude-map.}{%
+\subsubsection{3.3 Implement Pytorch Conv2D filters to perform Sobel
+filtering on Gaussian smoothed images, show the gradient magnitude
+map.}\label{implement-pytorch-conv2d-filters-to-perform-sobel-filtering-on-gaussian-smoothed-images-show-the-gradient-magnitude-map.}}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+0.2264185973221705
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{coursework_01_files/coursework_01_31_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
